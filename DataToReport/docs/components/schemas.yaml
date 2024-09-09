@@ -1,0 +1,54 @@
+components:
+  schemas:
+    login_type:
+      type: string
+      enum:
+        - google
+        - email
+    user:
+      type: object
+      required:
+        - id
+        - email
+        - password
+        - name
+        - login_type
+      properties:
+        id:
+          type: integer
+          format: int64
+        user_id:
+          type: integer
+          format: int64
+        email:
+          type: string
+        password:
+          type: string
+        google_id:
+          type: string
+        name:
+          type: string
+        login_type:
+          $ref: '#/components/schemas/login_type'
+    putUser:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          $ref: '#/components/schemas/user/properties/id'
+        email:
+          $ref: '#/components/schemas/user/properties/email'
+        password:
+          $ref: '#/components/schemas/user/properties/password'
+        name:
+          $ref: '#/components/schemas/user/properties/name'
+    putUserResponse:
+        type: object
+        required:
+          - id
+        properties:
+            id:
+              $ref: '#/components/schemas/user/properties/id'
+            name:
+              $ref: '#/components/schemas/user/properties/name'

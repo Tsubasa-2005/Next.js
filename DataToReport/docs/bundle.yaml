@@ -1,0 +1,188 @@
+openapi: 3.0.3
+info:
+  title: EduSlot API
+  description: API documentation
+  version: 1.0.0
+  license:
+    name: EduSlot
+    url: https://github.com/Tsubasa-2005/EduSlot
+servers:
+  - url: http://127.0.0.1:8080
+paths:
+  /ping:
+    get:
+      operationId: Ping
+      summary: Ping the server
+      description: Check if the server is running.
+      responses:
+        '200':
+          description: Server is running
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - message
+                properties:
+                  message:
+                    type: string
+                    default: pong
+        default:
+          $ref: '#/components/responses/internalServerError'
+      security: []
+  /login:
+    post:
+      operationId: Login
+      summary: Post Login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - password
+              properties:
+                user_id:
+                  type: integer
+                  format: int64
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          headers:
+            Set-Cookie:
+              required: true
+              schema:
+                type: string
+                example: 'Authorization: Bearer <token>'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        default:
+          $ref: '#/components/responses/internalServerError'
+      security: []
+  /register:
+    post:
+      operationId: Register
+      summary: Post Register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - password
+                - name
+                - email
+              properties:
+                user_id:
+                  type: integer
+                  format: int64
+                password:
+                  type: string
+                name:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Register successful
+          headers:
+            Set-Cookie:
+              required: true
+              schema:
+                type: string
+                example: 'Authorization: Bearer <token>'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        default:
+          $ref: '#/components/responses/internalServerError'
+      security: []
+  /users:
+    put:
+      operationId: PutUser
+      summary: Update User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/putUser'
+      responses:
+        '200':
+          description: Update Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/putUserResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        default:
+          $ref: '#/components/responses/internalServerError'
+      security:
+        - BearerAuth: []
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  responses:
+    internalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+    badRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - message
+            properties:
+              message:
+                type: string
+  schemas:
+    id:
+      type: integer
+      format: int64
+    email:
+      type: string
+    password:
+      type: string
+    name:
+      type: string
+    putUser:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          $ref: '#/components/schemas/id'
+        email:
+          $ref: '#/components/schemas/email'
+        password:
+          $ref: '#/components/schemas/password'
+        name:
+          $ref: '#/components/schemas/name'
+    putUserResponse:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          $ref: '#/components/schemas/id'
+        name:
+          $ref: '#/components/schemas/name'
